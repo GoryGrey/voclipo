@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podcast Viz UI mockup - dark minimal</title>
+<style>
+  * { box-sizing:border-box; }
+  body { background:#0a0a0b; color:#e8e8ea;
+         font-family:system-ui,-apple-system,sans-serif;
+         max-width:560px; margin:0 auto; padding:3em 1.5em 5em;
+         -webkit-font-smoothing:antialiased; }
+  .mocklabel { color:#555; font-size:.75em; letter-spacing:.2em;
+               text-transform:uppercase; margin:4em 0 1.5em;
+               border-bottom:1px solid #1e1e20; padding-bottom:.75em; }
+  h1 { font-size:1.75em; font-weight:600; letter-spacing:-.02em; margin:0; }
+  .sub { color:#8a8a90; font-size:.95em; margin:.75em 0 2.5em; line-height:1.6; }
+  .field { margin:0 0 1.75em; }
+  label { display:block; font-size:.72em; font-weight:600;
+          letter-spacing:.14em; text-transform:uppercase; color:#8a8a90;
+          margin-bottom:.6em; }
+  input[type=text], select { width:100%; padding:.8em .9em; font-size:.95em;
+      background:#131315; color:#e8e8ea; border:1px solid #262628;
+      border-radius:8px; outline:none; }
+  input[type=text]:focus, select:focus { border-color:#7c5cff; }
+  input[type=file] { font-size:.85em; color:#8a8a90; width:100%; }
+  input[type=file]::file-selector-button { background:#1c1c1f; color:#e8e8ea;
+      border:1px solid #2e2e32; border-radius:8px; padding:.6em 1em;
+      font-size:.85em; cursor:pointer; margin-right:.8em; }
+  .hint { color:#5c5c62; font-size:.82em; margin-top:.5em; }
+  button.cta { width:100%; margin-top:.5em; padding:.9em; font-size:1em;
+      font-weight:600; background:#7c5cff; color:#fff; border:0;
+      border-radius:10px; cursor:pointer; letter-spacing:.01em; }
+  button.cta:hover { background:#8f73ff; }
+  hr.sep { border:0; border-top:1px solid #1e1e20; margin:2.5em 0; }
+  /* job page */
+  .jobtitle { font-size:1.15em; font-weight:600; letter-spacing:-.01em; }
+  .status { color:#8a8a90; font-size:.9em; margin:1.25em 0 .6em;
+            display:flex; justify-content:space-between; }
+  .status b { color:#e8e8ea; font-weight:600; }
+  #bar_wrap { background:#1c1c1f; border-radius:99px; height:6px; overflow:hidden; }
+  #bar { background:#7c5cff; height:100%; width:72%; border-radius:99px; }
+  #bar.done { width:100%; }
+  #log { margin-top:1.75em; font-family:ui-monospace,monospace; font-size:.78em;
+         line-height:1.9; color:#6a6a70; }
+  #log .ok { color:#9a9aa2; }
+  a.dl { display:block; text-align:center; margin-top:2em; padding:.9em;
+         background:#e8e8ea; color:#0a0a0b; border-radius:10px;
+         text-decoration:none; font-weight:600; }
+  a.dl:hover { background:#fff; }
+  .note { color:#3a3a3e; font-size:.78em; margin-top:4em; }
+</style>
+</head>
+<body>
+
+<div class="mocklabel">Page 1 &mdash; upload form</div>
+<h1>Podcast Viz</h1>
+<p class="sub">Turn episode audio into a vertical video with karaoke captions,
+an animated background, and a live waveform.</p>
+
+<form onsubmit="return false">
+  <div class="field">
+    <label>Episode title</label>
+    <input type="text" value="Do AIs Reason or Recite? The CARAT Paper">
+  </div>
+  <div class="field">
+    <label>Audio</label>
+    <input type="file">
+    <div class="hint">MP3, WAV, M4A or OGG</div>
+  </div>
+  <div class="field">
+    <label>Cover art</label>
+    <input type="file">
+    <div class="hint">JPG, PNG or WebP</div>
+  </div>
+  <div class="field">
+    <label>Script <span style="color:#3f3f44; letter-spacing:0; text-transform:none">(optional)</span></label>
+    <input type="file">
+    <div class="hint">Captions use your exact words. Without it, we transcribe.</div>
+  </div>
+  <hr class="sep">
+  <div class="field">
+    <label>Background</label>
+    <select>
+      <option>Nebula</option>
+      <option selected>Aurora</option>
+      <option>Starfield</option>
+      <option>Custom image</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Waveform</label>
+    <select>
+      <option>Neon line</option>
+      <option selected>Spectrum bars</option>
+      <option>Mirror</option>
+    </select>
+  </div>
+  <button class="cta" type="button">Make my video</button>
+</form>
+
+<div class="mocklabel">Page 2 &mdash; rendering</div>
+<div class="jobtitle">Do AIs Reason or Recite? The CARAT Paper</div>
+<div class="status"><span>Rendering</span><b>72%</b></div>
+<div id="bar_wrap"><div id="bar"></div></div>
+<div id="log">
+<span class="ok">transcribed 351 words</span><br>
+<span class="ok">captions: 342 words in 77 events</span><br>
+<span class="ok">background ready</span><br>
+<span class="ok">segment 0 ok</span><br>
+<span class="ok">segment 1 ok</span><br>
+<span class="ok">segment 2 ok</span>
+</div>
+
+<div class="mocklabel">Page 2 &mdash; done</div>
+<div class="jobtitle">Do AIs Reason or Recite? The CARAT Paper</div>
+<div class="status"><span>Finished</span><b>100%</b></div>
+<div id="bar_wrap"><div id="bar" class="done"></div></div>
+<div id="log">
+<span class="ok">segment 5 ok</span><br>
+<span class="ok">episode.mp4 &middot; 154.2s</span>
+</div>
+<a class="dl" href="#" onclick="return false">Download video</a>
+
+<p class="note">Mockup only. One accent color, no noise.</p>
+
+</body>
+</html>

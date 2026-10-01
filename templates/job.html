@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voclipo - {{ job.title }}</title>
+<style>
+  * { box-sizing:border-box; }
+  body { background:#0a0a0b; color:#e8e8ea;
+         font-family:system-ui,-apple-system,sans-serif;
+         max-width:600px; margin:0 auto; padding:2.5em 1.5em 5em;
+         -webkit-font-smoothing:antialiased; }
+  .logo { font-size:1.6em; font-weight:900; letter-spacing:-.03em;
+          color:#fff; transform:skew(-6deg) rotate(-1deg);
+          text-shadow:2px 2px 0 #00e5ff; display:inline-block;
+          margin-bottom:1.5em; }
+  .jobtitle { font-size:1.15em; font-weight:600; letter-spacing:-.01em; }
+  .status { color:#8a8a90; font-size:.9em; margin:1.25em 0 .6em;
+            display:flex; justify-content:space-between; }
+  .status b { color:#e8e8ea; font-weight:600; }
+  #bar_wrap { background:#1c1c1f; border-radius:99px; height:6px;
+              overflow:hidden; }
+  #bar { background:#00e5ff; height:100%; width:0%; border-radius:99px;
+         transition:width .5s; }
+  #log { margin-top:1.75em; font-family:ui-monospace,monospace; font-size:.78em;
+         line-height:1.9; color:#6a6a70; max-height:320px; overflow-y:auto; }
+  a.dl { display:none; text-align:center; margin-top:2em; padding:1em;
+         background:#ff2f5e; color:#fff; border-radius:10px;
+         text-decoration:none; font-weight:800; letter-spacing:.03em; }
+  a.dl:hover { background:#ff4d74; }
+  a.dl2 { display:none; text-align:center; margin-top:.8em; padding:.8em;
+         background:transparent; color:#8a8a90; border:1px solid #2e2e32;
+         border-radius:10px; text-decoration:none; font-size:.9em; }
+  a.dl2:hover { color:#e8e8ea; border-color:#4a4a50; }
+  #err { color:#ff6b6b; margin-top:1.5em; font-size:.85em; display:none;
+         white-space:pre-wrap; }
+  #scorecard { display:none; margin-top:2.5em; border:1px solid #1e1e20;
+               border-radius:12px; padding:1.4em; }
+  #scorecard h3 { margin:0 0 .4em; font-size:.75em; letter-spacing:.2em;
+                  text-transform:uppercase; color:#00e5ff; }
+  #scorecard .fine { color:#5c5c62; font-size:.78em; margin:0 0 1em; }
+  #scorecard ul { margin:0; padding:0; list-style:none; }
+  #scorecard li { font-size:.88em; color:#c9c9ce; padding:.55em 0;
+                  border-top:1px solid #1a1a1c; line-height:1.5; }
+  #scorecard li:first-child { border-top:0; }
+  #scorecard li::before { content:"▸ "; color:#ff2f5e; }
+  .quote { margin-top:.6em; font-size:.85em; color:#8a8a90;
+           border-left:2px solid #00e5ff; padding-left:.9em; }
+  .quote a { color:#00e5ff; text-decoration:none; font-weight:600; }
+  .adslot { margin:3em 0 0; text-align:center; }
+  /* AD SLOT: job_banner. Paste ad/affiliate HTML into ADS['job_banner']
+     in app.py and set ADS['enabled'] = True. */
+</style>
+</head>
+<body>
+<div class="logo">VOCLIPO</div>
+<div class="jobtitle">{{ job.title }}</div>
+<div class="status"><span id="statelabel">Starting</span><b id="pct">0%</b></div>
+<div id="bar_wrap"><div id="bar"></div></div>
+<div id="log"></div>
+<div id="err"></div>
+<a class="dl" id="dl" href="/job/{{ job.id }}/download">DOWNLOAD VIDEO</a>
+<a class="dl2" id="dl2" href="/job/{{ job.id }}/srt">Download captions (.srt)</a>
+<div id="quotes"></div>
+<div id="scorecard">
+  <h3>Clip scorecard</h3>
+  <p class="fine">Heuristic signals about this episode's clip potential.
+  Not a virality prediction.</p>
+  <ul id="signals"></ul>
+</div>
+<div class="adslot">
+  {% if ads.enabled %}{{ ads.job_banner | safe }}{% endif %}
+</div>
+<script>
+const jid = "{{ job.id }}";
+let scoreShown = false;
+function showScore(j){
+  if (scoreShown || !j.scorecard) return;
+  scoreShown = true;
+  const sc = j.scorecard;
+  const ul = document.getElementById('signals');
+  ul.innerHTML = sc.signals.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('scorecard').style.display = 'block';
+  if (j.n_quotes > 0) {
+    let q = '<div style="margin-top:1.5em"><h3 style="font-size:.75em;letter-spacing:.2em;text-transform:uppercase;color:#00e5ff;margin:0 0 .8em">Quote cards</h3>';
+    for (let i = 1; i <= j.n_quotes; i++) {
+      const t = sc.top_quotes[i-1] ? sc.top_quotes[i-1].text : ('Quote ' + i);
+      q += `<div class="quote">"${t.slice(0, 90)}${t.length > 90 ? '...' : ''}"<br><a href="/job/${jid}/quote/${i}">Download card ${i} (1080x1080)</a></div>`;
+    }
+    q += '</div>';
+    document.getElementById('quotes').innerHTML = q;
+  }
+}
+async function poll(){
+  const r = await fetch(`/job/${jid}/status`);
+  const j = await r.json();
+  const pct = Math.round(j.progress * 100);
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('bar').style.width = pct + '%';
+  document.getElementById('log').innerHTML =
+    j.log.map(l => l.replace(/ok$/, '<span style="color:#9a9aa2">ok</span>'))
+          .join('<br>');
+  const logel = document.getElementById('log');
+  logel.scrollTop = logel.scrollHeight;
+  if (j.state === 'done') {
+    document.getElementById('statelabel').textContent = 'Finished';
+    document.getElementById('dl').style.display = 'block';
+    document.getElementById('dl2').style.display = 'block';
+    showScore(j);
+    return;
+  }
+  if (j.state === 'failed') {
+    document.getElementById('statelabel').textContent = 'Failed';
+    const e = document.getElementById('err');
+    e.style.display = 'block';
+    e.textContent = j.error;
+    return;
+  }
+  let label = j.state.charAt(0).toUpperCase() + j.state.slice(1);
+  if (j.state === 'queued' && j.queue_pos > 0)
+    label = `Queued (#${j.queue_pos + 1} in line)`;
+  document.getElementById('statelabel').textContent = label;
+  setTimeout(poll, 2000);
+}
+poll();
+</script>
+</body>
+</html>

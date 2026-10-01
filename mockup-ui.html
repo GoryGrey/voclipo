@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podcast Viz UI mockup</title>
+<style>
+  body { background:#05050a; color:#eee; font-family:system-ui,sans-serif;
+         max-width:680px; margin:2em auto; padding:0 1em 4em; }
+  .mocklabel { color:#00e5ff; font-size:.8em; letter-spacing:.15em;
+               text-transform:uppercase; margin:3em 0 1em;
+               border-bottom:1px solid #222; padding-bottom:.5em; }
+  .page { background:#0b0b14; border:1px solid #2a2a3a; border-radius:14px;
+          padding:1.5em; }
+  h1 { color:#b44dff; }
+  .page h1 { font-size:1.6em; margin-top:0; }
+  label { display:block; margin:1em 0 .3em; font-weight:600; }
+  input[type=text], select { width:100%; padding:.6em; border-radius:8px;
+      border:1px solid #444; background:#161624; color:#eee; box-sizing:border-box; }
+  input[type=file] { margin:.3em 0; color:#bbb; }
+  .hint { color:#999; font-size:.85em; }
+  button.cta { margin-top:1.5em; padding:.8em 2em; font-size:1.1em;
+      background:#b44dff; color:#fff; border:0; border-radius:10px;
+      cursor:pointer; }
+  #bar_wrap { background:#222; border-radius:8px; height:22px; overflow:hidden; }
+  #bar { background:#b44dff; height:100%; width:72%; }
+  #state { margin:.6em 0; font-weight:600; }
+  #log { background:#111; border:1px solid #333; border-radius:8px;
+         padding:.8em; height:300px; overflow-y:auto; font-family:monospace;
+         font-size:.8em; white-space:pre-wrap; }
+  #dl a { padding:.8em 2em; background:#00e5ff; color:#002; border-radius:10px;
+          text-decoration:none; font-weight:700; display:inline-block;
+          margin-top:1.5em; }
+  .note { color:#888; font-size:.9em; margin-top:2em; }
+</style>
+</head>
+<body>
+
+<div class="mocklabel">Page 1 &mdash; upload form (this is the homepage)</div>
+<div class="page">
+<h1>Podcast Viz</h1>
+<p>Drop in your episode audio and get a vertical video with karaoke word
+captions, an animated background, and a live waveform.</p>
+<form onsubmit="return false">
+  <label>Episode title</label>
+  <input type="text" value="Do AIs Reason or Recite? The CARAT Paper">
+
+  <label>Audio file (mp3, wav, m4a, ogg)</label>
+  <input type="file">
+
+  <label>Cover art (jpg, png, webp)</label>
+  <input type="file">
+
+  <label>Script (optional, txt)</label>
+  <input type="file">
+  <div class="hint">If you upload the script, captions use your exact words.
+  Without it, captions use the transcription.</div>
+
+  <label>Background</label>
+  <select>
+    <option>Nebula (breathing blurred cover)</option>
+    <option selected>Aurora (flowing plasma)</option>
+    <option>Starfield (drifting stars)</option>
+    <option>Custom image</option>
+  </select>
+
+  <label>Waveform</label>
+  <select>
+    <option>Neon line (cyan/magenta)</option>
+    <option selected>Spectrum bars (cyan to magenta)</option>
+    <option>Mirror (symmetric purple)</option>
+  </select>
+
+  <button class="cta" type="button">Make my video</button>
+</form>
+</div>
+
+<div class="mocklabel">Page 2 &mdash; render in progress (right after you hit the button)</div>
+<div class="page">
+<h1 style="font-size:1.3em">Do AIs Reason or Recite? The CARAT Paper</h1>
+<div id="state">Rendering (72%)</div>
+<div id="bar_wrap"><div id="bar"></div></div>
+<div id="log" style="margin-top:1em">[12:20:04] job queued: Do AIs Reason or Recite? The CARAT Paper
+[12:20:05] transcribing audio for word timestamps...
+[12:20:07] loading whisper model base...
+[12:20:09] transcribing...
+[12:20:31] transcribed 351 words
+[12:20:31] script uploaded (3626 chars), aligning...
+[12:20:31] captions: 342 words in 77 events
+[12:20:31] building aurora background...
+[12:21:02] pre-rendering spectrum bars...
+[12:22:19] rendering video segments...
+[12:23:01] segment 0 ok
+[12:24:12] segment 1 ok
+[12:25:20] segment 2 ok</div>
+</div>
+
+<div class="mocklabel">Page 2 &mdash; done state (download button appears)</div>
+<div class="page">
+<h1 style="font-size:1.3em">Do AIs Reason or Recite? The CARAT Paper</h1>
+<div id="state">Done!</div>
+<div id="bar_wrap"><div id="bar" style="width:100%"></div></div>
+<div id="log" style="margin-top:1em">[12:20:04] job queued: Do AIs Reason or Recite? The CARAT Paper
+[12:20:05] transcribing audio for word timestamps...
+...
+[12:27:44] segment 5 ok
+[12:27:46] done: episode.mp4 (154.2s)
+[12:27:46] finished</div>
+<div id="dl"><a href="#" onclick="return false">Download video</a></div>
+</div>
+
+<p class="note">Mockup only, buttons do not work. Built from the app's real
+page styles.</p>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podcast Viz UI mockup - LOUD</title>
+<style>
+  * { box-sizing:border-box; }
+  body { background:#0a0a0a; color:#fff;
+         font-family:"Arial Black",Arial,sans-serif;
+         max-width:700px; margin:0 auto; padding:1em 1em 5em;
+         background-image:radial-gradient(#1c1c1c 1.5px, transparent 1.5px);
+         background-size:22px 22px; }
+  .mocklabel { color:#00e5ff; font-size:.8em; letter-spacing:.15em;
+               margin:3em 0 1em; border-bottom:3px solid #ff2fb3;
+               padding-bottom:.5em; font-family:monospace; }
+  .burst { display:inline-block; background:#ffe600; color:#000;
+           padding:.3em .8em; transform:rotate(-3deg);
+           border:4px solid #000; box-shadow:5px 5px 0 #ff2fb3;
+           font-size:.85em; margin-bottom:1em; }
+  h1.mega { font-size:3em; line-height:.95; margin:.2em 0;
+            color:#fff; text-shadow:4px 4px 0 #ff2fb3, 8px 8px 0 #00e5ff;
+            transform:rotate(-1.5deg); }
+  h1.mega span { color:#b6ff00; }
+  .tag { display:inline-block; background:#ff2fb3; color:#fff;
+         border:3px solid #000; box-shadow:4px 4px 0 #000;
+         padding:.2em .7em; transform:rotate(2deg); margin:.3em .3em .3em 0;
+         font-size:.8em; }
+  .card { background:#141414; border:4px solid #fff; border-radius:6px;
+          box-shadow:8px 8px 0 #b44dff; padding:1.4em; margin-top:1.5em;
+          transform:rotate(.6deg); }
+  label { display:block; margin:1.1em 0 .35em; font-size:.95em;
+          text-transform:uppercase; }
+  label .n { display:inline-block; background:#00e5ff; color:#000;
+             width:1.6em; height:1.6em; line-height:1.6em; text-align:center;
+             border:3px solid #000; margin-right:.5em; transform:rotate(-4deg); }
+  input[type=text], select { width:100%; padding:.7em; font-size:1em;
+      font-family:Arial,sans-serif; font-weight:bold;
+      border:4px solid #000; border-radius:6px; background:#ffe600; color:#000;
+      box-shadow:4px 4px 0 #ff2fb3; }
+  select { background:#b6ff00; }
+  input[type=file] { font-family:monospace; font-size:.85em; color:#bbb;
+      background:#000; border:3px dashed #ff2fb3; border-radius:6px;
+      padding:.8em; width:100%; }
+  .hint { color:#999; font-family:monospace; font-size:.8em; margin-top:.4em; }
+  button.cta { margin-top:1.6em; width:100%; padding:.9em; font-size:1.5em;
+      font-family:"Arial Black",Arial,sans-serif; text-transform:uppercase;
+      background:#ff2fb3; color:#fff; border:5px solid #000; border-radius:8px;
+      box-shadow:7px 7px 0 #00e5ff; cursor:pointer; transform:rotate(-1deg); }
+  button.cta:active { transform:rotate(-1deg) translate(4px,4px);
+      box-shadow:3px 3px 0 #00e5ff; }
+  /* job page */
+  .jobtitle { font-size:1.4em; text-shadow:3px 3px 0 #b44dff; }
+  #bar_wrap { background:#000; border:4px solid #fff; border-radius:6px;
+              height:34px; overflow:hidden; box-shadow:5px 5px 0 #ff2fb3; }
+  #bar { height:100%; width:72%;
+         background:repeating-linear-gradient(-45deg,#b6ff00 0 16px,#00e5ff 16px 32px); }
+  #bar.done { width:100%; }
+  #state { margin:.7em 0; font-size:1.2em; text-transform:uppercase;
+           display:inline-block; background:#000; border:3px solid #b6ff00;
+           padding:.2em .6em; transform:rotate(-1deg); }
+  #log { background:#000; border:4px solid #00e5ff; border-radius:6px;
+         padding:.8em; height:280px; overflow-y:auto;
+         font-family:monospace; font-size:.82em; white-space:pre-wrap;
+         color:#b6ff00; box-shadow:6px 6px 0 #b44dff; margin-top:1em; }
+  #dl a { display:inline-block; margin-top:1.6em; padding:.9em 2em;
+          font-size:1.3em; text-transform:uppercase; text-decoration:none;
+          background:#b6ff00; color:#000; border:5px solid #000;
+          border-radius:8px; box-shadow:7px 7px 0 #ff2fb3;
+          transform:rotate(1.5deg); }
+  .note { color:#666; font-family:monospace; font-size:.8em; margin-top:3em; }
+</style>
+</head>
+<body>
+
+<div class="mocklabel">Page 1 &mdash; upload form</div>
+<div class="burst">100% FREE* (*runs on Greg's computer)</div>
+<h1 class="mega">PODCAST<br><span>VIZ</span></h1>
+<div>
+  <span class="tag">AUDIO IN</span><span class="tag">VIDEO OUT</span><span class="tag">KARAOKE CAPTIONS</span>
+</div>
+
+<div class="card">
+<form onsubmit="return false">
+  <label><span class="n">1</span>Episode title</label>
+  <input type="text" value="Do AIs Reason or Recite? The CARAT Paper">
+
+  <label><span class="n">2</span>Audio file</label>
+  <input type="file">
+  <div class="hint">mp3 / wav / m4a / ogg. this is the whole point of the app.</div>
+
+  <label><span class="n">3</span>Cover art</label>
+  <input type="file">
+  <div class="hint">jpg / png / webp. goes big in the middle of the video.</div>
+
+  <label><span class="n">4</span>Script (optional)</label>
+  <input type="file">
+  <div class="hint">got a script? captions use YOUR words. no script? we transcribe it.</div>
+
+  <label><span class="n">5</span>Background</label>
+  <select>
+    <option>Nebula (breathing blurred cover)</option>
+    <option selected>Aurora (flowing plasma)</option>
+    <option>Starfield (drifting stars)</option>
+    <option>Custom image (upload your own)</option>
+  </select>
+
+  <label><span class="n">6</span>Waveform</label>
+  <select>
+    <option>Neon line (cyan/magenta)</option>
+    <option selected>Spectrum bars (cyan to magenta)</option>
+    <option>Mirror (symmetric purple)</option>
+  </select>
+
+  <button class="cta" type="button">Make my video</button>
+</form>
+</div>
+
+<div class="mocklabel">Page 2 &mdash; render in progress</div>
+<h1 class="mega" style="font-size:2em">COOKING<span>...</span></h1>
+<div class="card" style="box-shadow:8px 8px 0 #00e5ff">
+  <div class="jobtitle">Do AIs Reason or Recite? The CARAT Paper</div>
+  <div style="margin-top:.8em"><span id="state">Rendering - 72%</span></div>
+  <div id="bar_wrap" style="margin-top:.8em"><div id="bar"></div></div>
+  <div id="log">[12:20:04] job queued
+[12:20:05] transcribing audio for word timestamps...
+[12:20:31] transcribed 351 words
+[12:20:31] script uploaded, aligning...
+[12:20:31] captions: 342 words in 77 events
+[12:20:31] building aurora background...
+[12:21:02] pre-rendering spectrum bars...
+[12:22:19] rendering video segments...
+[12:23:01] segment 0 ok
+[12:24:12] segment 1 ok
+[12:25:20] segment 2 ok</div>
+</div>
+
+<div class="mocklabel">Page 2 &mdash; done</div>
+<div class="card" style="box-shadow:8px 8px 0 #b6ff00">
+  <div class="jobtitle">Do AIs Reason or Recite? The CARAT Paper</div>
+  <div style="margin-top:.8em"><span id="state" style="border-color:#b6ff00">Done - 100%</span></div>
+  <div id="bar_wrap" style="margin-top:.8em"><div id="bar" class="done"></div></div>
+  <div id="log">[12:27:44] segment 5 ok
+[12:27:46] done: episode.mp4 (154.2s)
+[12:27:46] finished</div>
+  <div id="dl"><a href="#" onclick="return false">Download video</a></div>
+</div>
+
+<p class="note">mockup only. buttons do nothing. if this direction sucks too,
+say so and describe the crime scene.</p>
+
+</body>
+</html>

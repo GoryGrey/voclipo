@@ -1,0 +1,7 @@
+jobs/
+.bgcache/
+__pycache__/
+*.pyc
+presets.json
+beta_codes.txt
+beta_usage.json
