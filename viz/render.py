@@ -171,8 +171,10 @@ def render_episode(job_dir, audio, cover, ass_path, title, bg_video,
     Returns output path."""
     os.makedirs(job_dir, exist_ok=True)
     layout = LAYOUTS.get(aspect, LAYOUTS['vertical'])
-    # The intro card pushes every caption +INTRO_SECS into the final video.
-    ass_offset = INTRO_SECS if intro else 0.0
+    # The intro card is concatenated BEFORE the content segments, so it
+    # already pushes every caption +INTRO_SECS into the final video.
+    # Shifting the ASS as well would double-shift captions late.
+    ass_offset = 0.0
     total = _duration(audio)
     header, events = parse_ass(ass_path)
     bounds = sorted({0.0, total}
