@@ -436,4 +436,9 @@ def download_quote(jid, n):
 
 if __name__ == '__main__':
     jobs.cleanup_old_jobs()
+    codes = load_beta_codes()
+    if codes:
+        print(f'beta gate: ACTIVE ({len(codes)} codes in beta_codes.txt)')
+    else:
+        print('beta gate: OPEN (no beta_codes.txt, local mode)')
     app.run(host='127.0.0.1', port=5057, debug=False)

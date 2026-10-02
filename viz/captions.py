@@ -230,7 +230,7 @@ def _split_punct(w):
     return m.group(1), m.group(2), m.group(3)
 
 
-def _fuzzy_hit(low, want, thresh=0.85):
+def _fuzzy_hit(low, want, thresh=0.8):
     """Return the user's spelling if low matches a brand word."""
     for target_low, target in want:
         if low == target_low:
@@ -250,7 +250,7 @@ def apply_custom_words(words, custom_words):
     words: [(word, start, end)]. Matching is case-insensitive on the word
     core (punctuation stripped); the user's spelling wins, original
     punctuation is preserved. Exact matches always win; near-misses
-    (difflib ratio >= 0.85, core >= 5 chars) catch Whisper's creative
+    (difflib ratio >= 0.8, core >= 5 chars) catch Whisper's creative
     spellings, including brand names Whisper split across two words
     ("Vocley Poe" -> "Voclipo"). Bigram matching uses a lower threshold
     (0.72) since the split halves the signal. Returns (new_words, n_replaced).
