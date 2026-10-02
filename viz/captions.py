@@ -207,3 +207,55 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     with open(out_path, 'w') as f:
         f.write(header + '\n'.join(events) + '\n')
     return sum(len(l) for l in lines), len(events)
+
+
+def parse_custom_words(text):
+    """Parse the brand-words textarea: one correct spelling per line."""
+    words = []
+    for line in (text or '').splitlines():
+        w = line.strip().strip(',')
+        if w:
+            words.append(w)
+    # de-dupe, keep order
+    seen, out = set(), []
+    for w in words:
+        if w.lower() not in seen:
+            seen.add(w.lower())
+            out.append(w)
+    return out
+
+
+def apply_custom_words(words, custom_words):
+    """Replace Whisper's spelling of brand/product names with the user's.
+
+    words: [(word, start, end)]. Matching is case-insensitive on the word
+    core (punctuation stripped); the user's spelling wins, original
+    punctuation is preserved. Exact matches always win; near-misses
+    (difflib ratio >= 0.85, core >= 5 chars) catch Whisper's creative
+    spellings. Returns (new_words, n_replaced).
+    """
+    if not custom_words:
+        return words, 0
+    want = [(c.lower(), c) for c in custom_words]
+    out, n = [], 0
+    for w, s, e in words:
+        m = re.match(r"^(\W*)(.*?)(\W*)$", w, re.DOTALL)
+        pre, core, post = m.group(1), m.group(2), m.group(3)
+        low = core.lower()
+        hit = None
+        for target_low, target in want:
+            if low == target_low:
+                hit = target
+                break
+        if hit is None and len(low) >= 5:
+            for target_low, target in want:
+                if len(target_low) >= 5 and \
+                        difflib.SequenceMatcher(None, low,
+                                                target_low).ratio() >= 0.85:
+                    hit = target
+                    break
+        if hit and core != hit:
+            w = pre + hit + post
+            n += 1
+        out.append((w, s, e))
+    return out, n

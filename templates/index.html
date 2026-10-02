@@ -123,6 +123,13 @@ and shareable quote cards. Free while in beta.</p>
   <label class="check"><input type="checkbox" name="clean_mode">
     <span>Clean mode
       <small>Beeps profanity automatically. Advertiser-friendly versions.</small></span></label>
+  <div class="field" style="margin-top:.6em">
+    <label>Brand words <span class="opt">(optional)</span></label>
+    <textarea name="custom_words" id="custom_words" rows="2"
+      placeholder="Voclipo"></textarea>
+    <div class="hint">One per line. Fixes how Whisper spells your brand,
+      product, or name in captions. Works on close misspellings too.</div>
+  </div>
 
   <hr class="sep">
   <p class="sectionhead">Look</p>
@@ -223,6 +230,7 @@ document.getElementById('preset_load').addEventListener('change', function(e){
   setCheck('voice_cleanup', p.voice_cleanup);
   setCheck('dead_air', p.dead_air);
   setCheck('clean_mode', p.clean_mode);
+  if (p.custom_words) set('custom_words', p.custom_words.join('\n'));
   document.getElementById('bgimg_wrap').style.display =
     p.bg_style === 'custom' ? 'block' : 'none';
 });

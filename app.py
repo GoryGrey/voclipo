@@ -12,6 +12,7 @@ from flask import (Flask, render_template, request, redirect, url_for,
 
 from viz import jobs
 from viz.captions import (transcribe_words, build_ass, build_srt,
+                          parse_custom_words, apply_custom_words,
                           CAPTION_PRESETS)
 from viz.backgrounds import build_background
 from viz.waveforms import (wave_video, wave_mode, WAVEFORMS, WAVE_THEMES)
@@ -187,6 +188,14 @@ def pipeline(job):
                                         log=log)
             else:
                 log('clean mode: no profanity found, audio untouched')
+        custom_words = job.get('custom_words') or []
+        if custom_words and words:
+            words, n_fixed = apply_custom_words(words, custom_words)
+            if n_fixed:
+                log(f"brand words: fixed {n_fixed} spelling(s) "
+                    f"({', '.join(custom_words)})")
+            else:
+                log('brand words: no misspellings found, captions untouched')
 
         jobs.set_state(job, 'captions')
         script_text = ''
@@ -292,6 +301,7 @@ def start_render():
     voice_cleanup = request.form.get('voice_cleanup') == 'on'
     dead_air = request.form.get('dead_air') == 'on'
     clean_mode = request.form.get('clean_mode') == 'on'
+    custom_words = parse_custom_words(request.form.get('custom_words', ''))
     preset_name = request.form.get('preset_name', '').strip()
     beta_code = request.form.get('beta_code', '').strip()
     bg_image_f = request.files.get('bg_image')
@@ -327,7 +337,7 @@ def start_render():
                 'wave_theme': wave_theme, 'caption_style': caption_style,
                 'aspect': aspect, 'intro': intro,
                 'voice_cleanup': voice_cleanup, 'dead_air': dead_air,
-                'clean_mode': clean_mode}
+                'clean_mode': clean_mode, 'custom_words': custom_words}
     if preset_name:
         save_preset(preset_name, settings)
 
