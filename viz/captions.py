@@ -225,6 +225,25 @@ def parse_custom_words(text):
     return out
 
 
+def _split_punct(w):
+    m = re.match(r"^(\W*)(.*?)(\W*)$", w, re.DOTALL)
+    return m.group(1), m.group(2), m.group(3)
+
+
+def _fuzzy_hit(low, want, thresh=0.85):
+    """Return the user's spelling if low matches a brand word."""
+    for target_low, target in want:
+        if low == target_low:
+            return target
+    if len(low) >= 5:
+        for target_low, target in want:
+            if len(target_low) >= 5 and \
+                    difflib.SequenceMatcher(None, low,
+                                            target_low).ratio() >= thresh:
+                return target
+    return None
+
+
 def apply_custom_words(words, custom_words):
     """Replace Whisper's spelling of brand/product names with the user's.
 
@@ -232,28 +251,39 @@ def apply_custom_words(words, custom_words):
     core (punctuation stripped); the user's spelling wins, original
     punctuation is preserved. Exact matches always win; near-misses
     (difflib ratio >= 0.85, core >= 5 chars) catch Whisper's creative
-    spellings. Returns (new_words, n_replaced).
+    spellings, including brand names Whisper split across two words
+    ("Vocley Poe" -> "Voclipo"). Bigram matching uses a lower threshold
+    (0.72) since the split halves the signal. Returns (new_words, n_replaced).
     """
     if not custom_words:
         return words, 0
     want = [(c.lower(), c) for c in custom_words]
-    out, n = [], 0
-    for w, s, e in words:
-        m = re.match(r"^(\W*)(.*?)(\W*)$", w, re.DOTALL)
-        pre, core, post = m.group(1), m.group(2), m.group(3)
-        low = core.lower()
-        hit = None
-        for target_low, target in want:
-            if low == target_low:
-                hit = target
-                break
-        if hit is None and len(low) >= 5:
-            for target_low, target in want:
-                if len(target_low) >= 5 and \
-                        difflib.SequenceMatcher(None, low,
-                                                target_low).ratio() >= 0.85:
-                    hit = target
-                    break
+    # pass 1: merge split brand names ("Vocley" + "Poe")
+    merged, n = [], 0
+    i = 0
+    while i < len(words):
+        w, s, e = words[i]
+        done = False
+        if i + 1 < len(words):
+            w2, s2, e2 = words[i + 1]
+            pre1, core1, _ = _split_punct(w)
+            _, core2, post2 = _split_punct(w2)
+            combo = (core1 + core2).lower()
+            if len(combo) >= 8:
+                hit = _fuzzy_hit(combo, want, thresh=0.72)
+                if hit:
+                    merged.append((pre1 + hit + post2, s, e2))
+                    n += 1
+                    i += 2
+                    done = True
+        if not done:
+            merged.append((w, s, e))
+            i += 1
+    # pass 2: single-word replacements
+    out = []
+    for w, s, e in merged:
+        pre, core, post = _split_punct(w)
+        hit = _fuzzy_hit(core.lower(), want)
         if hit and core != hit:
             w = pre + hit + post
             n += 1
